@@ -21,7 +21,7 @@ public class Convenio {
         this.nombre = nombre;
     }
 
-    public float getPorcentaje() {
+    public int getPorcentaje() {
         return porcentaje;
     }
 
