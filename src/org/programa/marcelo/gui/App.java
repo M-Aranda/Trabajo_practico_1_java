@@ -1,35 +1,82 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.programa.marcelo.gui;
 
 import Convenios.Convenio;
 import Cursos.Curso;
+import Registros.Alumno;
+import Registros.Matricula;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
- * @author maranda
+ * @author Marcelo Aranda
  */
 public class App extends javax.swing.JFrame {
 
     private List<Curso> cursos;
     private List<Convenio> convenios;
+    private List<Alumno> alumnos;
+    private List<Matricula> matriculas;
+
+    private int cantHombres;
+    private int cantMujeres;
+
+    private int cantMHard;
+    private int cantHHard;
+    private int cantMJump;
+    private int cantHJump;
+    private int cantMTec;
+    private int cantHTec;
+
+    private int recH;
+    private int recJ;
+    private int recT;
 
     public App() {
         initComponents();
         this.setTitle("Sistema de matriculas Beat Dance School");
         setLocationRelativeTo(null);
+        txtRun.requestFocus();
 
         initCursos();
         initConvenios();
         deshabilitarCamposNoeditables();
         txtDescuento.setText("0");
         txtTotalFinal.setText("0");
+        txtNCuotas.setToolTipText("Debe presionar enter para calcular el valor de cada cuota");
+        ocultarBtnCancelar();
+        inicializarAtributos();
 
+    }
+
+    private void inicializarAtributos() {
+        rdbtnMasculino.setSelected(true);
+        alumnos = new ArrayList<>();
+        matriculas = new ArrayList<>();
+        cantHombres = 0;
+        cantMujeres = 0;
+        cantHHard = 0;
+        cantHJump = 0;
+        cantHTec = 0;
+        cantMHard = 0;
+        cantMJump = 0;
+        cantMTec = 0;
+        recH = 0;
+        recJ = 0;
+        recT = 0;
+
+    }
+
+    private void ocultarBtnCancelar() {
+        btnCancelar.setEnabled(false);
+        btnCancelar.setVisible(false);
+    }
+
+    private void mostrarBtnCancelar() {
+        btnCancelar.setEnabled(true);
+        btnCancelar.setVisible(true);
     }
 
     private void mostrarMatrMensTotal() {
@@ -51,8 +98,56 @@ public class App extends javax.swing.JFrame {
             txtTotal.setText(String.valueOf(cursos.get(2).getMatricula() + (cursos.get(2).getMensualidad() * cursos.get(2).getCantidadDeMeses())));
             txtTotalFinal.setText(String.valueOf(cursos.get(2).getMatricula() + (cursos.get(2).getMensualidad() * cursos.get(2).getCantidadDeMeses())));
 
+        } else if (String.valueOf(cboCurso.getSelectedItem()).equalsIgnoreCase(cursos.get(3).getNombre())) {
+            txtMatricula.setText(String.valueOf(cursos.get(3).getMatricula()));
+            txtMensualidad.setText(String.valueOf(cursos.get(3).getMensualidad()));
+            txtTotal.setText(String.valueOf(cursos.get(3).getMatricula() + (cursos.get(3).getMensualidad() * cursos.get(3).getCantidadDeMeses())));
+            txtTotalFinal.setText(String.valueOf(cursos.get(3).getMatricula() + (cursos.get(3).getMensualidad() * cursos.get(3).getCantidadDeMeses())));
+
         }
 
+    }
+
+    private void recolectarDatosH() {
+        for (Matricula m : matriculas) {
+            if (m.getAlumno().getSexo().equals("Masculino") && m.getCurso().equals("Hardstyle Shuffle")) {
+                cantHHard++;
+                recH += m.getTotalFinal();
+            } else if (m.getAlumno().getSexo().equals("Femenino") && m.getCurso().equals("Hardstyle Shuffle")) {
+                cantMHard++;
+                recH += m.getTotalFinal();
+            }
+        }
+    }
+
+    private void recolectarDatosJ() {
+        for (Matricula m : matriculas) {
+            if (m.getAlumno().getSexo().equals("Masculino") && m.getCurso().equals("Jumpstyle")) {
+                cantHJump++;
+                recJ += m.getTotalFinal();
+            } else if (m.getAlumno().getSexo().equals("Femenino") && m.getCurso().equals("Jumpstyle")) {
+                cantMJump++;
+                recJ += m.getTotalFinal();
+            }
+        }
+    }
+
+    private void recolectarDatosT() {
+        for (Matricula m : matriculas) {
+            if (m.getAlumno().getSexo().equals("Masculino") && m.getCurso().equals("Tecktonik")) {
+                cantHTec++;
+                recT += m.getTotalFinal();
+            } else if (m.getAlumno().getSexo().equals("Femenino") && m.getCurso().equals("Tecktonik")) {
+                cantMTec++;
+                recT += m.getTotalFinal();
+            }
+        }
+    }
+
+    private void recolectarDatosTC() {
+        recolectarDatosH();
+        recolectarDatosJ();
+        recolectarDatosT();
     }
 
     private void deshabilitarCamposNoeditables() {
@@ -99,10 +194,11 @@ public class App extends javax.swing.JFrame {
         txtTotalFinal = new javax.swing.JTextField();
         txtValorCuota = new javax.swing.JTextField();
         txtNCuotas = new javax.swing.JTextField();
-        btnMasculino = new javax.swing.JRadioButton();
-        btnFemenino = new javax.swing.JRadioButton();
+        rdbtnMasculino = new javax.swing.JRadioButton();
+        rdbtnFemenino = new javax.swing.JRadioButton();
         btnBuscar = new javax.swing.JButton();
         btnMatricular = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
         mnuP = new javax.swing.JMenuBar();
         menuBtnArchivo = new javax.swing.JMenu();
         menuEstadisticas = new javax.swing.JMenuItem();
@@ -186,30 +282,24 @@ public class App extends javax.swing.JFrame {
             }
         });
 
-        txtTotalFinal.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTotalFinalActionPerformed(evt);
-            }
-        });
-
-        txtNCuotas.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNCuotasActionPerformed(evt);
-            }
-        });
         txtNCuotas.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txtNCuotasKeyPressed(evt);
             }
         });
 
-        btnGroupSexo.add(btnMasculino);
-        btnMasculino.setText("Masculino");
+        btnGroupSexo.add(rdbtnMasculino);
+        rdbtnMasculino.setText("Masculino");
 
-        btnGroupSexo.add(btnFemenino);
-        btnFemenino.setText("Femenino");
+        btnGroupSexo.add(rdbtnFemenino);
+        rdbtnFemenino.setText("Femenino");
 
         btnBuscar.setText("...");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
         pnlPrincipal.setLayout(pnlPrincipalLayout);
@@ -246,9 +336,9 @@ public class App extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(pnlPrincipalLayout.createSequentialGroup()
-                                        .addComponent(btnMasculino)
+                                        .addComponent(rdbtnMasculino)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btnFemenino))
+                                        .addComponent(rdbtnFemenino))
                                     .addGroup(pnlPrincipalLayout.createSequentialGroup()
                                         .addComponent(txtRun, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(18, 18, 18)
@@ -289,8 +379,8 @@ public class App extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSexo)
-                    .addComponent(btnMasculino)
-                    .addComponent(btnFemenino))
+                    .addComponent(rdbtnMasculino)
+                    .addComponent(rdbtnFemenino))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnlPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblNombre)
@@ -335,6 +425,18 @@ public class App extends javax.swing.JFrame {
         );
 
         btnMatricular.setText("Matricular");
+        btnMatricular.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMatricularActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         menuBtnArchivo.setText("Archivo");
 
@@ -360,7 +462,8 @@ public class App extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnCancelar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnMatricular)))
                 .addContainerGap())
         );
@@ -370,7 +473,9 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(pnlPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnMatricular)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnMatricular)
+                    .addComponent(btnCancelar))
                 .addContainerGap())
         );
 
@@ -379,10 +484,6 @@ public class App extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txtTotalFinalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalFinalActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTotalFinalActionPerformed
 
     private void cboCursoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboCursoActionPerformed
         mostrarMatrMensTotal();
@@ -407,6 +508,8 @@ public class App extends javax.swing.JFrame {
         } else if (String.valueOf(cboConvenio.getSelectedItem()).contains(convenios.get(1).getNombre())) {
             descuento = calcularDescuento(totalEnNumeros, (convenios.get(1).getPorcentaje()));
 
+        } else if (String.valueOf(cboConvenio.getSelectedItem()).contains(convenios.get(2).getNombre())) {
+            descuento = calcularDescuento(totalEnNumeros, (convenios.get(2).getPorcentaje()));
         }
 
         txtDescuento.setText(String.valueOf(descuento));
@@ -426,21 +529,202 @@ public class App extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_chkConvenioActionPerformed
 
-    
-    private void txtNCuotasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNCuotasKeyPressed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNCuotasKeyPressed
-
-    private void txtNCuotasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNCuotasActionPerformed
-        int cantidadCuotas=Integer.parseInt(txtNCuotas.getText());
-        
-        int valorCuota=calcularValorCuotas(Integer.parseInt(txtTotalFinal.getText()), cantidadCuotas);
-        txtValorCuota.setText(String.valueOf(valorCuota));
-    }//GEN-LAST:event_txtNCuotasActionPerformed
 
     private void menuEstadisticasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEstadisticasActionPerformed
-        //Este boton muestra estadisticas
+
+        Estadisticas est = new Estadisticas();
+        recolectarDatosTC();
+        est.fijarDatosHard(cantMHard, cantHHard, recH);
+        est.fijarDatosJump(cantMJump, cantHJump, recJ);
+        est.fijarDatosTec(cantMTec, cantHTec, recT);
+        est.calcularYFijarRecaudacionFinal(recH, recJ, recT);
+        est.setVisible(true);
+        //cierra y destruye la ventana al salirse de ella
+        est.setDefaultCloseOperation(est.DISPOSE_ON_CLOSE);
+        
+
+
     }//GEN-LAST:event_menuEstadisticasActionPerformed
+
+    private void txtNCuotasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNCuotasKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
+            int cantidadCuotas = Integer.parseInt(txtNCuotas.getText());
+            int valorCuota = calcularValorCuotas(Integer.parseInt(txtTotalFinal.getText()), cantidadCuotas);
+            txtValorCuota.setText(String.valueOf(valorCuota));
+        };
+    }//GEN-LAST:event_txtNCuotasKeyPressed
+
+    private void btnMatricularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMatricularActionPerformed
+        String run = txtRun.getText();
+        String sexo = "";
+        if (rdbtnMasculino.isSelected()) {
+            sexo = "Masculino";
+            cantHombres++;
+        } else if (rdbtnFemenino.isSelected()) {
+            sexo = "Femenino";
+            cantMujeres++;
+        }
+        String nombre = txtNombre.getText();
+        String direccion = txtDireccion.getText();
+
+        Alumno a = new Alumno(run, sexo, nombre, direccion);
+        alumnos.add(a);
+
+        String curso = String.valueOf(cboCurso.getSelectedItem());
+        int precioMatricula = Integer.parseInt(txtMatricula.getText());
+        int precioMensualidad = Integer.parseInt(txtMensualidad.getText());
+        int precioTotal = Integer.parseInt(txtTotal.getText());
+        boolean convenio = false;
+        if (chkConvenio.isSelected()) {
+            convenio = true;
+        } else {
+            convenio = false;
+        }
+
+        String tipoDeConvenio = "";
+
+        if (convenio) {
+            tipoDeConvenio = String.valueOf(cboConvenio.getSelectedItem());
+
+        } else if (!convenio) {
+            tipoDeConvenio = "Sin convenio";
+        }
+
+        int descuento = Integer.parseInt(txtDescuento.getText());
+        int totalFinal = Integer.parseInt(txtTotalFinal.getText());
+        int cantCuotas = Integer.parseInt(txtNCuotas.getText());
+        int valorCuota = Integer.parseInt(txtValorCuota.getText());
+
+        Matricula m = new Matricula(a, curso, precioMatricula, precioMensualidad, precioTotal, convenio, tipoDeConvenio, descuento, totalFinal, cantCuotas, valorCuota);
+        matriculas.add(m);
+
+        msgDeRegistro();
+
+        limpiarForumulario();
+
+
+    }//GEN-LAST:event_btnMatricularActionPerformed
+
+    private void bloquearTodosLosCamposYBotonesEC() {
+        txtRun.setEnabled(false);
+        rdbtnFemenino.setEnabled(false);
+        rdbtnMasculino.setEnabled(false);
+        txtNombre.setEnabled(false);
+        txtDireccion.setEnabled(false);
+        cboCurso.setEnabled(false);
+        chkConvenio.setEnabled(false);
+        txtDescuento.setEnabled(false);
+        txtNCuotas.setEnabled(false);
+        btnBuscar.setEnabled(false);
+        btnMatricular.setEnabled(false);
+
+        mostrarBtnCancelar();
+
+    }
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        String rutABuscar = txtRun.getText();
+        boolean seEncontro = false;
+
+        for (Matricula m : matriculas) {
+            if (m.getAlumno().getRun().toLowerCase().contains(rutABuscar)) {
+                seEncontro = true;
+
+                if (m.getAlumno().getSexo().equals("Masculino")) {
+                    rdbtnMasculino.isSelected();
+                } else {
+                    rdbtnFemenino.isSelected();
+                }
+
+                txtNombre.setText(m.getAlumno().getNombre());
+                txtDireccion.setText(m.getAlumno().getDireccion());
+
+                if (m.getCurso().equals("Hardstyle Shuffle")) {
+                    cboCurso.setSelectedIndex(1);
+                } else if (m.getCurso().equals("Jumpstyle")) {
+                    cboCurso.setSelectedIndex(2);
+                } else if (m.getCurso().equals("Tecktonik")) {
+                    cboCurso.setSelectedIndex(3);
+                }
+
+                txtMatricula.setText(String.valueOf(m.getPrecioMatricula()));
+                txtMensualidad.setText(String.valueOf(m.getPrecioMensualidad()));
+                txtTotal.setText(String.valueOf(m.getPrecioTotal()));
+
+                if (m.isConvenio()) {
+
+                    chkConvenio.setSelected(true);
+
+                    if (m.getTipoConvenio().equals(convenios.get(1))) {
+                        cboConvenio.setSelectedIndex(1);
+                    } else if (m.getTipoConvenio().equals(convenios.get(2))) {
+                        cboConvenio.setSelectedIndex(2);
+                    }
+
+                    txtDescuento.setText(String.valueOf(m.getDescuento()));
+
+                } else if (!m.isConvenio()) {
+
+                    chkConvenio.setSelected(false);
+                    cboConvenio.setSelectedIndex(0);
+                    txtDescuento.setText("0");
+                }
+
+                txtTotalFinal.setText(String.valueOf(m.getTotalFinal()));
+                txtNCuotas.setText(String.valueOf(m.getCantCuotas()));
+                txtValorCuota.setText(String.valueOf(m.getTotalCuota()));
+
+                bloquearTodosLosCamposYBotonesEC();
+
+            } else if (!seEncontro) {
+                msgDeNoEncontrado();
+                txtRun.setText("");
+                txtRun.requestFocus();
+
+            }
+
+        }
+
+
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        txtRun.setEnabled(true);
+        rdbtnFemenino.setEnabled(true);
+        rdbtnMasculino.setEnabled(true);
+        txtNombre.setEnabled(true);
+        txtDireccion.setEnabled(true);
+        cboCurso.setEnabled(true);
+        chkConvenio.setEnabled(true);
+        txtNCuotas.setEnabled(true);
+        btnBuscar.setEnabled(true);
+        btnMatricular.setEnabled(true);
+
+        limpiarForumulario();
+        ocultarBtnCancelar();
+
+
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void msgDeNoEncontrado() {
+        String titulo = "Error";
+        String msg = "Ese run no se encuentra registrado";
+        int tipo_de_msg = JOptionPane.ERROR_MESSAGE;
+
+        JOptionPane.showMessageDialog(null, msg, titulo, tipo_de_msg);
+
+    }
+
+    private void msgDeRegistro() {
+        String titulo = "Mensaje";
+        String msg = "Alumno matriculado";
+        int tipo_de_msg = JOptionPane.INFORMATION_MESSAGE;
+
+        JOptionPane.showMessageDialog(null, msg, titulo, tipo_de_msg);
+
+    }
 
     /**
      * @param args the command line arguments
@@ -477,9 +761,27 @@ public class App extends javax.swing.JFrame {
         });
     }
 
+    private void limpiarForumulario() {
+        txtRun.setText("");
+        rdbtnMasculino.setSelected(true);
+        txtNombre.setText("");
+        txtDireccion.setText("");
+        cboCurso.setSelectedIndex(0);
+        chkConvenio.setSelected(false);
+        cboConvenio.setEnabled(false);
+        pnlConvenio.setEnabled(false);
+        txtDescuento.setText("0");
+        txtNCuotas.setText("");
+        txtValorCuota.setText("");
+        cboConvenio.setSelectedIndex(0);
+        txtRun.requestFocus();
+
+    }
+
     private void initConvenios() {
         convenios = new ArrayList<>();
 
+        convenios.add(new Convenio("Ningun convenio", 0));
         convenios.add(new Convenio("Caja los andes", 5));
         convenios.add(new Convenio("Caja los heroes", 7));
 
@@ -494,6 +796,7 @@ public class App extends javax.swing.JFrame {
     private void initCursos() {
         cursos = new ArrayList<>();
 
+        cursos.add(new Curso("Seleccione curso...", 0, 0, 0));
         cursos.add(new Curso("Hardstyle Shuffle", 80000, 40000, 6));
         cursos.add(new Curso("Jumpstyle", 60000, 50000, 4));
         cursos.add(new Curso("Tecktonik", 90000, 60000, 3));
@@ -515,9 +818,8 @@ public class App extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
-    private javax.swing.JRadioButton btnFemenino;
+    private javax.swing.JButton btnCancelar;
     private javax.swing.ButtonGroup btnGroupSexo;
-    private javax.swing.JRadioButton btnMasculino;
     private javax.swing.JButton btnMatricular;
     private javax.swing.JComboBox<String> cboConvenio;
     private javax.swing.JComboBox<String> cboCurso;
@@ -539,6 +841,8 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JMenuBar mnuP;
     private javax.swing.JPanel pnlConvenio;
     private javax.swing.JPanel pnlPrincipal;
+    private javax.swing.JRadioButton rdbtnFemenino;
+    private javax.swing.JRadioButton rdbtnMasculino;
     private javax.swing.JTextField txtDescuento;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtMatricula;
@@ -550,4 +854,5 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JTextField txtTotalFinal;
     private javax.swing.JTextField txtValorCuota;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -55,7 +55,8 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="pnlPrincipal" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="btnCancelar" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="btnMatricular" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -69,7 +70,10 @@
               <EmptySpace max="32767" attributes="0"/>
               <Component id="pnlPrincipal" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="btnMatricular" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnMatricular" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnCancelar" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -135,9 +139,9 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" attributes="0">
-                                          <Component id="btnMasculino" min="-2" max="-2" attributes="0"/>
+                                          <Component id="rdbtnMasculino" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="btnFemenino" min="-2" max="-2" attributes="0"/>
+                                          <Component id="rdbtnFemenino" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Group type="102" attributes="0">
                                           <Component id="txtRun" min="-2" pref="134" max="-2" attributes="0"/>
@@ -196,8 +200,8 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lblSexo" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnMasculino" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnFemenino" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="rdbtnMasculino" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="rdbtnFemenino" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -421,19 +425,15 @@
         <Component class="javax.swing.JTextField" name="txtTotal">
         </Component>
         <Component class="javax.swing.JTextField" name="txtTotalFinal">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtTotalFinalActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="txtValorCuota">
         </Component>
         <Component class="javax.swing.JTextField" name="txtNCuotas">
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtNCuotasActionPerformed"/>
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtNCuotasKeyPressed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JRadioButton" name="btnMasculino">
+        <Component class="javax.swing.JRadioButton" name="rdbtnMasculino">
           <Properties>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="btnGroupSexo"/>
@@ -441,7 +441,7 @@
             <Property name="text" type="java.lang.String" value="Masculino"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JRadioButton" name="btnFemenino">
+        <Component class="javax.swing.JRadioButton" name="rdbtnFemenino">
           <Properties>
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="btnGroupSexo"/>
@@ -453,6 +453,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="..."/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -460,6 +463,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Matricular"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMatricularActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnCancelar">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Cancelar"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelarActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
