@@ -34,6 +34,8 @@ public class App extends javax.swing.JFrame {
     private int recJ;
     private int recT;
 
+    private Estadisticas est;
+
     public App() {
         initComponents();
         this.setTitle("Sistema de matriculas Beat Dance School");
@@ -66,6 +68,8 @@ public class App extends javax.swing.JFrame {
         recH = 0;
         recJ = 0;
         recT = 0;
+        est = new Estadisticas();
+        est.setVisible(false);
 
     }
 
@@ -109,11 +113,18 @@ public class App extends javax.swing.JFrame {
     }
 
     private void recolectarDatosH() {
+        cantHHard=0;
+        cantMHard=0;
+        recH=0;
+        
         for (Matricula m : matriculas) {
             if (m.getAlumno().getSexo().equals("Masculino") && m.getCurso().equals("Hardstyle Shuffle")) {
+
+                
                 cantHHard++;
                 recH += m.getTotalFinal();
             } else if (m.getAlumno().getSexo().equals("Femenino") && m.getCurso().equals("Hardstyle Shuffle")) {
+                
                 cantMHard++;
                 recH += m.getTotalFinal();
             }
@@ -121,8 +132,13 @@ public class App extends javax.swing.JFrame {
     }
 
     private void recolectarDatosJ() {
+        cantHJump=0;
+        cantMJump=0;
+        recJ=0;
+
         for (Matricula m : matriculas) {
             if (m.getAlumno().getSexo().equals("Masculino") && m.getCurso().equals("Jumpstyle")) {
+                
                 cantHJump++;
                 recJ += m.getTotalFinal();
             } else if (m.getAlumno().getSexo().equals("Femenino") && m.getCurso().equals("Jumpstyle")) {
@@ -133,11 +149,18 @@ public class App extends javax.swing.JFrame {
     }
 
     private void recolectarDatosT() {
+        cantHTec=0;
+        cantMTec=0;
+        recT=0;
+        
         for (Matricula m : matriculas) {
+
             if (m.getAlumno().getSexo().equals("Masculino") && m.getCurso().equals("Tecktonik")) {
+               
                 cantHTec++;
                 recT += m.getTotalFinal();
             } else if (m.getAlumno().getSexo().equals("Femenino") && m.getCurso().equals("Tecktonik")) {
+                
                 cantMTec++;
                 recT += m.getTotalFinal();
             }
@@ -532,16 +555,9 @@ public class App extends javax.swing.JFrame {
 
     private void menuEstadisticasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEstadisticasActionPerformed
 
-        Estadisticas est = new Estadisticas();
-        recolectarDatosTC();
-        est.fijarDatosHard(cantMHard, cantHHard, recH);
-        est.fijarDatosJump(cantMJump, cantHJump, recJ);
-        est.fijarDatosTec(cantMTec, cantHTec, recT);
-        est.calcularYFijarRecaudacionFinal(recH, recJ, recT);
         est.setVisible(true);
         //cierra y destruye la ventana al salirse de ella
         est.setDefaultCloseOperation(est.DISPOSE_ON_CLOSE);
-        
 
 
     }//GEN-LAST:event_menuEstadisticasActionPerformed
@@ -600,6 +616,12 @@ public class App extends javax.swing.JFrame {
         matriculas.add(m);
 
         msgDeRegistro();
+
+        recolectarDatosTC();
+        est.fijarDatosHard(cantMHard, cantHHard, recH);
+        est.fijarDatosJump(cantMJump, cantHJump, recJ);
+        est.fijarDatosTec(cantMTec, cantHTec, recT);
+        est.calcularYFijarRecaudacionFinal(recH, recJ, recT);
 
         limpiarForumulario();
 
